@@ -23,8 +23,14 @@ export function ReportCreatePage() {
   };
 
   return (
-    <div>
-      <h2 className="mb-4 text-2xl font-bold">Add Work Report</h2>
+    <div className="space-y-5">
+      <section className="rounded-[2rem] border border-white/60 bg-gradient-to-r from-violet-950 via-violet-900 to-fuchsia-900 p-7 text-white shadow-2xl">
+        <p className="text-xs font-semibold uppercase tracking-[0.28em] text-violet-200">Reports</p>
+        <h2 className="mt-2 text-4xl font-bold tracking-tight">Add a new work report</h2>
+        <p className="mt-2 max-w-2xl text-sm text-violet-100/85">
+          Log customer work, track duration, tag reminders, and keep your daily reporting structure consistent.
+        </p>
+      </section>
       <ReportForm onSubmit={onSubmit} submitting={submitting} error={error} />
     </div>
   );

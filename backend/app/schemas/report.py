@@ -40,7 +40,7 @@ PriorityType = Literal["Low", "Medium", "High", "Critical"]
 
 class WorkReportBase(BaseModel):
     report_date: date
-    work_category: str = Field(pattern="^(" + "|".join(WORK_CATEGORIES) + ")$")
+    work_category: str = Field(min_length=2, max_length=60)
     customer_name: str | None = Field(default=None, max_length=120)
     project_name: str | None = Field(default=None, max_length=120)
     location: str | None = Field(default=None, max_length=120)

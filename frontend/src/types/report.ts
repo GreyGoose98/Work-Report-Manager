@@ -1,14 +1,4 @@
-export type WorkCategory =
-  | 'Daily Work'
-  | 'Customer Visit'
-  | 'Trial'
-  | 'Time Estimation'
-  | 'Technical Support'
-  | 'Service Support'
-  | 'Internal Meeting'
-  | 'Documentation'
-  | 'Follow-up'
-  | 'Other';
+export type WorkCategory = string;
 
 export type WorkStatus =
   | 'Draft'

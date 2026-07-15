@@ -1,5 +1,5 @@
 import { useMemo, useState } from 'react';
-import { PRIORITIES, WORK_CATEGORIES, WORK_STATUSES } from '../utils/constants';
+import { WORK_STATUSES } from '../utils/constants';
 import type { ReportInput, WorkReport } from '../types/report';
 
 type Props = {
@@ -18,7 +18,7 @@ type VoiceRecognition = {
 
 const defaultValue: ReportInput = {
   report_date: new Date().toISOString().slice(0, 10),
-  work_category: 'Daily Work',
+  work_category: '',
   customer_name: '',
   project_name: '',
   location: '',
@@ -40,6 +40,7 @@ export function ReportForm({ initial, onSubmit, submitting, error }: Props) {
           project_name: initial.project_name || '',
           location: initial.location || '',
           machine_model: initial.machine_model || '',
+          work_category: initial.work_category || '',
           pending_actions: initial.pending_actions || '',
           remarks: initial.remarks || '',
         }
@@ -92,79 +93,83 @@ export function ReportForm({ initial, onSubmit, submitting, error }: Props) {
           remarks: form.remarks || null,
         });
       }}
-      className="space-y-5 rounded-2xl border border-slate-200 bg-white p-5 shadow-sm md:p-6"
+      className="space-y-6 rounded-3xl border border-white/70 bg-white/95 p-6 shadow-lg backdrop-blur md:p-7"
     >
-      <div className="grid gap-4 md:grid-cols-2">
+      <div>
+        <p className="text-sm font-semibold uppercase tracking-[0.24em] text-violet-500">Reports workspace</p>
+        <h3 className="mt-2 text-3xl font-bold tracking-tight text-slate-950">Add a new activity log</h3>
+        <p className="mt-1 text-sm text-slate-500">Capture customer work, task progress, and reminder items in one structured entry.</p>
+      </div>
+
+      <div className="grid gap-4 md:grid-cols-2 xl:grid-cols-3">
         <label className="text-sm font-medium text-slate-700">
-          Report Date
+          Date
           <input
             type="date"
             value={form.report_date}
             onChange={(e) => setField('report_date', e.target.value)}
-            className="mt-1.5 w-full rounded-lg border border-slate-300 px-3 py-2.5 text-sm"
+            className="mt-1.5 w-full rounded-xl border border-slate-300 px-3 py-2.5 text-sm"
             required
           />
         </label>
-        <label className="text-sm font-medium text-slate-700">
-          Work Category
-          <select
-            value={form.work_category}
-            onChange={(e) => setField('work_category', e.target.value)}
-            className="mt-1.5 w-full rounded-lg border border-slate-300 px-3 py-2.5 text-sm"
-          >
-            {WORK_CATEGORIES.map((option) => (
-              <option key={option}>{option}</option>
-            ))}
-          </select>
-        </label>
-      </div>
-
-      <div className="grid gap-4 md:grid-cols-2">
         <label className="text-sm font-medium text-slate-700">
           Customer Name
           <input
             placeholder="Enter customer name"
             value={form.customer_name || ''}
             onChange={(e) => setField('customer_name', e.target.value)}
-            className="mt-1.5 w-full rounded-lg border border-slate-300 px-3 py-2.5 text-sm"
+            className="mt-1.5 w-full rounded-xl border border-slate-300 px-3 py-2.5 text-sm"
+            required
           />
         </label>
         <label className="text-sm font-medium text-slate-700">
-          Project Name
+          Duration
           <input
-            placeholder="Enter project name"
-            value={form.project_name || ''}
-            onChange={(e) => setField('project_name', e.target.value)}
-            className="mt-1.5 w-full rounded-lg border border-slate-300 px-3 py-2.5 text-sm"
-          />
-        </label>
-        <label className="text-sm font-medium text-slate-700">
-          Location
-          <input
-            placeholder="Enter location"
+            placeholder="Example: 2h 30m"
             value={form.location || ''}
             onChange={(e) => setField('location', e.target.value)}
-            className="mt-1.5 w-full rounded-lg border border-slate-300 px-3 py-2.5 text-sm"
+            className="mt-1.5 w-full rounded-xl border border-slate-300 px-3 py-2.5 text-sm"
+          />
+        </label>
+      </div>
+
+      <div className="grid gap-4 md:grid-cols-2 xl:grid-cols-3">
+        <label className="text-sm font-medium text-slate-700">
+          Category
+          <input
+            placeholder="Enter category manually"
+            value={form.work_category}
+            onChange={(e) => setField('work_category', e.target.value)}
+            className="mt-1.5 w-full rounded-xl border border-slate-300 px-3 py-2.5 text-sm"
+            required
           />
         </label>
         <label className="text-sm font-medium text-slate-700">
-          Machine Model
+          Subcategory
           <input
-            placeholder="Enter machine model"
-            value={form.machine_model || ''}
-            onChange={(e) => setField('machine_model', e.target.value)}
-            className="mt-1.5 w-full rounded-lg border border-slate-300 px-3 py-2.5 text-sm"
+            placeholder="Enter subcategory manually"
+            value={form.project_name || ''}
+            onChange={(e) => setField('project_name', e.target.value)}
+            className="mt-1.5 w-full rounded-xl border border-slate-300 px-3 py-2.5 text-sm"
           />
+        </label>
+        <label className="text-sm font-medium text-slate-700">
+          Status
+          <select value={form.status} onChange={(e) => setField('status', e.target.value)} className="mt-1.5 w-full rounded-xl border border-slate-300 px-3 py-2.5 text-sm">
+            {WORK_STATUSES.map((option) => (
+              <option key={option}>{option}</option>
+            ))}
+          </select>
         </label>
       </div>
 
       <div>
         <div className="mb-1.5 flex items-center justify-between gap-3">
-          <label className="text-sm font-medium text-slate-700">Activity Description</label>
+          <label className="text-sm font-medium text-slate-700">Task</label>
           <button
             type="button"
             onClick={startVoiceInput}
-            className="shrink-0 rounded-full bg-blue-600 px-3 py-1.5 text-xs font-semibold text-white"
+            className="shrink-0 rounded-full bg-violet-600 px-3 py-1.5 text-xs font-semibold text-white"
           >
             Use Voice Input
           </button>
@@ -172,7 +177,7 @@ export function ReportForm({ initial, onSubmit, submitting, error }: Props) {
         <textarea
           value={form.activity_description}
           onChange={(e) => setField('activity_description', e.target.value)}
-          className="h-32 w-full rounded-lg border border-slate-300 px-3 py-2.5 text-sm"
+          className="h-36 w-full rounded-xl border border-slate-300 px-3 py-2.5 text-sm"
           required
         />
         {voiceError && <p className="mt-1 text-xs text-amber-700">{voiceError}</p>}
@@ -180,59 +185,61 @@ export function ReportForm({ initial, onSubmit, submitting, error }: Props) {
 
       <div className="grid gap-4 md:grid-cols-2">
         <label className="text-sm font-medium text-slate-700">
-          Status
-          <select value={form.status} onChange={(e) => setField('status', e.target.value)} className="mt-1.5 w-full rounded-lg border border-slate-300 px-3 py-2.5 text-sm">
-            {WORK_STATUSES.map((option) => (
-              <option key={option}>{option}</option>
-            ))}
-          </select>
+          Reminder Items
+          <textarea
+            placeholder="List pending or WIP follow-ups"
+            value={form.pending_actions || ''}
+            onChange={(e) => setField('pending_actions', e.target.value)}
+            className="mt-1.5 w-full rounded-xl border border-slate-300 px-3 py-2.5 text-sm"
+          />
         </label>
         <label className="text-sm font-medium text-slate-700">
-          Priority
-          <select value={form.priority} onChange={(e) => setField('priority', e.target.value)} className="mt-1.5 w-full rounded-lg border border-slate-300 px-3 py-2.5 text-sm">
-            {PRIORITIES.map((option) => (
-              <option key={option}>{option}</option>
-            ))}
-          </select>
+          Remark
+          <textarea
+            placeholder="Add blockers, outcomes, or next-step notes"
+            value={form.remarks || ''}
+            onChange={(e) => setField('remarks', e.target.value)}
+            className="mt-1.5 w-full rounded-xl border border-slate-300 px-3 py-2.5 text-sm"
+          />
         </label>
       </div>
 
-      <label className="block text-sm font-medium text-slate-700">
-        Pending Actions
-        <textarea
-          placeholder="List follow-up tasks"
-          value={form.pending_actions || ''}
-          onChange={(e) => setField('pending_actions', e.target.value)}
-          className="mt-1.5 w-full rounded-lg border border-slate-300 px-3 py-2.5 text-sm"
-        />
-      </label>
-
-      <label className="block text-sm font-medium text-slate-700">
-        Next Follow-up Date
-        <input
-          type="date"
-          value={form.next_follow_up_date || ''}
-          onChange={(e) => setField('next_follow_up_date', e.target.value || null)}
-          className="mt-1.5 w-full rounded-lg border border-slate-300 px-3 py-2.5 text-sm md:max-w-sm"
-        />
-      </label>
-
-      <label className="block text-sm font-medium text-slate-700">
-        Remarks
-        <textarea
-          placeholder="Add remarks"
-          value={form.remarks || ''}
-          onChange={(e) => setField('remarks', e.target.value)}
-          className="mt-1.5 w-full rounded-lg border border-slate-300 px-3 py-2.5 text-sm"
-        />
-      </label>
+      <div className="grid gap-4 md:grid-cols-2 xl:grid-cols-3">
+        <label className="text-sm font-medium text-slate-700">
+          Reminder Tag
+          <input
+            placeholder="Example: Follow-up / Escalation"
+            value={form.machine_model || ''}
+            onChange={(e) => setField('machine_model', e.target.value)}
+            className="mt-1.5 w-full rounded-xl border border-slate-300 px-3 py-2.5 text-sm"
+          />
+        </label>
+        <label className="text-sm font-medium text-slate-700">
+          Follow-up Date
+          <input
+            type="date"
+            value={form.next_follow_up_date || ''}
+            onChange={(e) => setField('next_follow_up_date', e.target.value || null)}
+            className="mt-1.5 w-full rounded-xl border border-slate-300 px-3 py-2.5 text-sm"
+          />
+        </label>
+        <label className="text-sm font-medium text-slate-700">
+          Priority lane
+          <select value={form.priority} onChange={(e) => setField('priority', e.target.value as ReportInput['priority'])} className="mt-1.5 w-full rounded-xl border border-slate-300 px-3 py-2.5 text-sm">
+            <option value="Low">Low</option>
+            <option value="Medium">Medium</option>
+            <option value="High">High</option>
+            <option value="Critical">Critical</option>
+          </select>
+        </label>
+      </div>
 
       {error && <p className="text-sm text-rose-700">{error}</p>}
 
       <button
         type="submit"
         disabled={submitting}
-        className="w-full rounded-lg bg-blue-700 px-4 py-2.5 font-semibold text-white disabled:opacity-60 md:w-auto"
+        className="w-full rounded-xl bg-violet-700 px-4 py-3 font-semibold text-white shadow-sm transition hover:bg-violet-600 disabled:opacity-60 md:w-auto"
       >
         {submitting ? 'Saving...' : 'Save Report'}
       </button>
